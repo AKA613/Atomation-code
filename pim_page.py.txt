@@ -1,0 +1,27 @@
+**pim_page.py**
+
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.action_chains import ActionChains
+
+class PIMPage:
+    def __init__(self, driver):
+        self.driver = driver
+        self.pim_menu = (By.XPATH, "//span[text()='PIM']")
+        self.add_employee = (By.LINK_TEXT, "Add Employee")
+        self.emp_firstname = (By.NAME, "firstName")
+        self.emp_lastname = (By.NAME, "lastName")
+        self.save_btn = (By.XPATH, "//button[@type='submit']")
+        self.emp_list = (By.LINK_TEXT, "Employee List")
+
+    def go_to_pim(self):
+        ActionChains(self.driver).move_to_element(self.driver.find_element(*self.pim_menu)).click().perform()
+
+    def add_employee(self, fname, lname):
+        self.driver.find_element(*self.add_employee).click()
+        self.driver.find_element(*self.emp_firstname).send_keys(fname)
+        self.driver.find_element(*self.emp_lastname).send_keys(lname)
+        self.driver.find_element(*self.save_btn).click()
+
+    def verify_employee(self, name):
+        self.driver.find_element(*self.emp_list).click()
+        return name in self.driver.page_source
