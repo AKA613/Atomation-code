@@ -1,0 +1,25 @@
+**test_employee.py**
+
+import pytest
+from utils.driver_setup import get_driver
+from pages.login_page import LoginPage
+from pages.pim_page import PIMPage
+
+def test_add_and_verify_employee():
+    driver = get_driver()
+    driver.get("https://opensource-demo.orangehrmlive.com/web/index.php/auth/login")
+    
+    login = LoginPage(driver)
+    login.login("Admin", "admin123")
+
+    pim = PIMPage(driver)
+    pim.go_to_pim()
+    employees = [("John", "Doe"), ("Alice", "Smith"), ("David", "Miller")]
+
+    for fname, lname in employees:
+        pim.add_employee(fname, lname)
+
+    for fname, lname in employees:
+        assert pim.verify_employee(fname), f"{fname} not found in Employee List"
+    
+    driver.quit()
